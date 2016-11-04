@@ -1,14 +1,13 @@
 <template>
   <div class="btn-group" data-toggle="buttons">
-    <label :class="['btn',btnVariant,btnSize,checked(index)?'active':'']" v-for="(item,index) in list">
-      <input
-        type="checkbox"
-        :value="item.value"
-        autocomplete="off"
-        v-model="item.checked"
-        :disabled="item.disabled">
+    <div class="btn"
+         :class="[btnVariant, btnSize, checked(item) > -1 && 'active' || '']"
+         v-for="item in list"
+         @click="toggleItem(item)"
+         :disabled="item.disabled"
+    >
       {{item.text}}
-    </label>
+    </div>
   </div>
 </template>
 
@@ -29,7 +28,7 @@
         default: [],
         required: true
       },
-      model: {
+      value: {
         type: Array,
         default: [],
       },
@@ -41,61 +40,22 @@
         type: String,
         default: 'default'
       },
-      returnObject: {
-        type: Boolean,
-        default: false
-      },
     },
     methods: {
-      checked(index) {
-        if (!this.list) return false
-        let result = false
-        if (this.returnObject) {
-          for (let i = 0; i < this.model.length; i++) {
-            if (this.model[i].value === this.list[index].value) {
-              result = true
-            }
-          }
+      toggleItem(item) {
+        let v = this.value.slice()
+        let index = this.checked(item)
+        if (index === -1) {
+          v.push(item)
         } else {
-          result = this.model.indexOf(this.list[index].value) !== -1
+          v.splice(index, 1)
         }
-        return result
+        this.$emit('input', v)
+      },
+      checked(item) {
+        if (!this.list) return -1
+        return this.value.findIndex(v => v.value === item.value)
       }
     },
-    watch: {
-      list: {
-        handler(val) {
-          this.model = []
-          this.list.forEach((item) => {
-            if (item.checked) {
-              if (this.returnObject) {
-                this.model.push(item)
-              } else {
-                this.model.push(item.value)
-              }
-            }
-          });console.log(changed);
-          // Emit an event
-          this.$emit('changed', this.model)
-        },
-        deep: true,
-      }
-    },
-    mounted() {
-      // handle initial selection
-      this.list.forEach((item) => {
-        if (this.returnObject) {
-          this.model.forEach((modelItem) => {
-            if (modelItem.value === item.value) {
-              item.checked = true
-            }
-          })
-        } else {
-          if (this.model.indexOf(item.value) !== -1) {
-            item.checked = true
-          }
-        }
-      })
-    }
   }
 </script>

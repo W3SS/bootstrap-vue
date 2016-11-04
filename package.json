@@ -39,7 +39,7 @@
     "sass-loader": "latest",
     "tether": "latest",
     "vue": "latest",
-	"vue-loader": "latest",
+    "vue-loader": "latest",
     "webpack": "^2.1.0-beta.25"
   },
   "homepage": "https://bootstrap-vue.github.io",
@@ -49,5 +49,6 @@
         "es2015"
       ]
     ]
-  }
+  },
+  "dependencies": {}
 }
