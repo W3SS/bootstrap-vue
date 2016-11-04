@@ -1,26 +1,17 @@
 <template>
   <div class="btn-group" data-toggle="buttons">
-    <label :class="{btn:true,btnVariant,btnSize,disabled:item.disabled,active:selection == item.value}"
-           v-for="item in list">
-      <input
-        type="radio"
-        name="options"
-        :value="item.value"
-        autocomplete="off"
-        v-model="selection"
-        :disabled="item.disabled"> {{item.text}}
-    </label>
+    <div class="btn"
+         :class="[btnVariant, btnSize, item.disabled && 'disabled' || '', value.value == item.value && 'active' || '']"
+         @click="changeSelection(item)"
+         v-for="item in list">
+      {{item.text}}
+    </div>
   </div>
 </template>
 
 <script>
   export default {
     replace: true,
-    data() {
-      return {
-        selection: '',
-      }
-    },
     computed: {
       btnVariant() {
         return !this.variant || this.variant === `default` ? `btn-secondary` : `btn-${this.variant}`
@@ -33,7 +24,7 @@
       },
     },
     props: {
-      model: {
+      value: {
         required: true
       },
       list: {
@@ -49,32 +40,11 @@
         type: String,
         default: 'default'
       },
-      returnObject: {
-        type: Boolean,
-        default: false
-      },
     },
-    watch: {
-      selection: {
-        handler() {
-          // set the model based on selection
-          if (this.returnObject) {
-            this.list.forEach(function (item) {
-              if (item.value === this.selection)
-                this.model = item
-            })
-          } else {
-            this.model = this.selection
-          }
-          // Emit an event
-          this.$root.$emit('changed::button-radio', this.model)
-        },
-        deep: true,
+    methods: {
+      changeSelection(item) {
+        this.$emit('input', item)
       }
-    },
-    mounted() {
-      // handle initial selection
-      this.selection = this.model.value
     }
   }
 </script>
