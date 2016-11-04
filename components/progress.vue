@@ -1,18 +1,10 @@
 <template>
-  <div
-    :class="[progress,progressVariant,striped ? 'progress-striped' : '',animated ? 'progres-animated' : '']"
+  <progress
+    :class="['progress',progressVariant, striped ? 'progress-striped' : '', animated ? 'progres-animated' : '']"
     :value="value"
     :max="max"
-    :aria-valuenow="value"
-    :aria-valuemin="0"
-    :aria-valuemax="max"
     ref="progress">
-
-    <div class="progress">
-      <span class="progress-bar" :style="{width: value + '%'}" ref="progressbar"></span>
-    </div>
-
-  </div>
+  </progress>
 </template>
 
 <script>
@@ -44,18 +36,6 @@
         type: String,
         default: 'default',
       },
-    },
-    mounted() {
-      this._progress = this.$refs.progress;
-      this._progressBar = this.$refs.progressbar;
-      this._progressBar.style.width = this.value + '%';
-      this._progress.setAttribute('value', this.value)
-    },
-    watch: {
-      value(val) {
-        this._progress.setAttribute('value', val);
-        this._progressBar.style.width = this.value + '%'
-      }
     }
   }
 
