@@ -4,8 +4,8 @@
       :id="id"
       :class="['btn','dropdown',dropdownToggle,btnVariant,btnSize]"
       role="button"
-      aria-haspopup="true"
-      aria-expanded="show"
+      :aria-haspopup="true"
+      :aria-expanded="show"
       @click.prevent="toggle($event)"
       :disabled="disabled">
       <span class="checked-items" v-html="displayItem"></span>

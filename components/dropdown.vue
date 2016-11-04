@@ -3,9 +3,8 @@
        @click="toggle($event)">
     <div class="btn-action">
       <button
-        id="dLabel"
         :class="['btn',dropdownToggle,btnVariant,btnSize]"
-        aria-haspopup="true"
+        :aria-haspopup="true"
         :aria-expanded="show"
         :disabled="disabled"
         v-if="text">
