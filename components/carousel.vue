@@ -3,7 +3,7 @@
 
     <!-- Indicators -->
     <ol class="carousel-indicators" v-show="indicators">
-      <li v-for="(item,index) in slides" :class="{active:item == index}" @click="changeSlide(index)"></li>
+      <li v-for="item in slidesCount" :class="{active: (item - 1) === index}" @click="changeSlide(item - 1)"></li>
     </ol>
 
     <!-- Wrapper for slides -->
@@ -73,7 +73,6 @@
         index: 0,
         slidesCount: 0,
         animating: false,
-        slides: [],
         direction: DIRECTION.rtl,
       }
     },
@@ -97,14 +96,14 @@
         if (this.animating) return;
         this.index--;
         if (this.index < 0) {
-          this.index = this.slidesCount
+          this.index = this.slidesCount - 1
         }
       },
       // next slide
       next() {
         if (this.animating) return;
         this.index++;
-        if (this.index > this.slidesCount) {
+        if (this.index > this.slidesCount - 1) {
           this.index = 0
         }
       },
@@ -120,7 +119,7 @@
       // start auto rotate slides
       start() {
         if (this.interval === 0 || typeof this.interval === 'undefined') return;
-        this._intervalId = setInterval(function () {
+        this._intervalId = setInterval(() => {
           this.next()
         }, this.interval);
       }
@@ -128,11 +127,12 @@
     mounted() {
       // get all slides
       this._items = this.$el.querySelectorAll('.carousel-item');
-      this.slidesCount = this._items.length - 1;
-      this.slides = Array.apply(null, {length: this._items.length}).map(Number.call, Number);
+      this.slidesCount = this._items.length
 
       // set first slide as active
-      this._items[0].classList.add('active');
+      if (this._items && this._items.length > 0) {
+        this._items[0].classList.add('active');
+      }
 
       // auto rotate slides
       this.start()
@@ -158,12 +158,12 @@
         this._items[oldVal].classList.add(this.direction.outgoing);
         this._items[val].classList.remove(this.direction.incoming);
         // wait for animation to finish and cleanup classes
-        this._carouselAnimation = setTimeout(function () {
+        this._carouselAnimation = setTimeout(() => {
           this._items[oldVal].classList.remove(this.direction.outgoing, 'active');
           this._items[val].classList.remove(this.direction.overlay);
           this.animating = false;
           // trigger an event
-          $root.$emit('slid::carousel', val)
+          this.$emit('slide::carousel', val)
         }, TRANSITION_DURATION);
       }
     },
