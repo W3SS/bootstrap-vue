@@ -3,14 +3,14 @@
 
     <button type="button"
             :class="['btn','btn-secondary',btnSize]"
-            :disabled="currentPage == 1 "
-            @click.prevent="(currentPage == 1) ? _return : currentPage--">
+            :disabled="value == 1 "
+            @click.prevent="(value == 1) ? _return : setPage(value - 1)">
       <span aria-hidden="true">&laquo;</span>
     </button>
 
     <button type="button"
-            :class="['btn','btn-secondary',btnSize,currentPage == 1 ?  'active' : '']"
-            @click.prevent="currentPage = 1"
+            :class="['btn','btn-secondary',btnSize,value == 1 ?  'active' : '']"
+            @click.prevent="setPage(1)"
             v-show="showPrev">1
     </button>
 
@@ -19,24 +19,24 @@
     <button type="button"
             :class="['btn',
                 btnSize,
-                btnVariant(index),index + diff == currentPage ? 'active' : '',
-                index + diff != currentPage ? 'hidden-xs-down' : '']"
+                btnVariant(index),index + diff == value ? 'active' : '',
+                index + diff != value ? 'hidden-xs-down' : '']"
             v-for="(item,index) in pageLinks"
-            @click.prevent="currentPage = index + diff">{{index + diff}}
+            @click.prevent="setPage(index + diff)">{{index + diff}}
     </button>
 
     <span :class="['btn','btn-secondary',btnSize]" v-show="showNext">...</span>
 
     <button type="button"
-            :class="['btn','btn-secondary',btnSize,numberOfPages == currentPage ? 'active' : '']"
+            :class="['btn','btn-secondary',btnSize,numberOfPages == value ? 'active' : '']"
             v-show="showNext"
-            @click.prevent="currentPage = numberOfPages">{{numberOfPages}}
+            @click.prevent="setPage(numberOfPages)">{{numberOfPages}}
     </button>
 
     <button type="button"
             :class="['btn','btn-secondary',btnSize]"
-            :disabled="currentPage == numberOfPages"
-            @click.prevent="(currentPage == numberOfPages) ? _return : currentPage++">
+            :disabled="value == numberOfPages"
+            @click.prevent="(value == numberOfPages) ? _return : setPage(value + 1)">
       <span aria-hidden="true">&raquo;</span>
     </button>
 
@@ -63,8 +63,8 @@
       },
       pageLinks() {
         let result = this.limit
-        if (this.currentPage > this.numberOfPages) {
-          this.currentPage = 1
+        if (this.value > this.numberOfPages) {
+          this.$emit('input', 1)
         }
         this.diff = 1
         this.showPrev = false
@@ -75,20 +75,20 @@
         }
         // if at the beggining of the list or at the end show full number of pages within limit - 2
         // -2 is reserves space for two buttons: "..." and "first/last button"
-        if (this.currentPage <= this.limit - 2) {
+        if (this.value <= this.limit - 2) {
           this.diff = 1
           this.showNext = true
           result = this.limit - 2
         }
         // at the end of the range
-        if (this.currentPage > this.numberOfPages - this.limit + 2) {
+        if (this.value > this.numberOfPages - this.limit + 2) {
           this.diff = this.numberOfPages - this.limit + 3
           this.showPrev = true
           result = this.limit - 2
         }
         // if somehere in the middle show just limit - 4 links in the middle and one button on the left with "..." and on button on the right preceeded with "..."
-        if (this.currentPage >= this.limit - 2 && this.currentPage <= this.numberOfPages - this.limit + 2) {
-          this.diff = this.currentPage - 1
+        if (this.value >= this.limit - 2 && this.value <= this.numberOfPages - this.limit + 2) {
+          this.diff = this.value - 1
           this.showPrev = true
           this.showNext = true
           result = this.limit - 4
@@ -98,14 +98,17 @@
     },
     methods: {
       btnVariant(index) {
-        return (index + this.diff === this.currentPage) ? `btn-${this.variant}` : `btn-secondary`
+        return (index + this.diff === this.value) ? `btn-${this.variant}` : `btn-secondary`
       },
       _return() {
 
       },
+      setPage(val) {
+        this.$emit('input', val)
+      }
     },
     props: {
-      currentPage: {
+      value: {
         type: Number,
         default: 1,
       },
