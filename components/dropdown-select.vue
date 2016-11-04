@@ -12,7 +12,7 @@
     </button>
     <ul class="dropdown-menu" :class="{'dropdown-menu-right' : position == 'right'}" aria-labelledby="dLabel">
       <li v-for="item in list">
-        <button class="dropdown-item" :click.stop.prevent="select(item)">{{item.text}}</button>
+        <button class="dropdown-item" @click.stop.prevent="select(item)">{{item.text}}</button>
       </li>
     </ul>
   </div>
@@ -40,20 +40,20 @@
       },
       displayItem() {
         // if zero show default message
-        if ((this.returnObject && this.model && !this.model.text) || (!this.returnObject && this.model && this.model.length === 0) || this.forceDefault) {
+        if ((this.value && !this.value.text) || this.forceDefault) {
           return this.defaultText
         }
 
         // show selected item
-        if (this.returnObject && this.model && this.model.text) {
-          return this.model.text
+        if (this.value && this.value.text) {
+          return this.value.text
         }
 
         // show text that coresponds to the model value
-        if (!this.returnObject && this.model) {
-          let result = this.model || ''
+        if (this.value) {
+          let result = this.value || ''
           this.list.forEach(function (item) {
-            if (item.value === this.model) {
+            if (item.value === this.value) {
               result = item.text
             }
           });
@@ -67,8 +67,8 @@
       id: {
         type: String
       },
-      model: {
-        required: false
+      value: {
+        required: true
       },
       list: {
         type: Array,
@@ -126,14 +126,9 @@
       },
       select(item) {
         // we need to set empty model to make model watchers react to it
-        if (this.returnObject) {
-          this.model = item
-        } else {
-          this.model = item.value
-        }
         this.show = false
         // Dispatch an event from the current vm that propagates all the way up to its $root
-        this.$root.$emit('selected::dropdown', this.id, this.model)
+        this.$emit('input', item)
       }
     },
     created: function () {
