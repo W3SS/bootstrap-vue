@@ -1,10 +1,10 @@
 {
   "name": "bootstrap4-vue",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Bootstrap 4 Components for Vue.js 2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bootstrap-vue/bootstrap-vue.git"
+    "url": "git+https://github.com/Ugzuzg/bootstrap-vue.git"
   },
   "main": "dist/bootstrapVue.common.js",
   "scripts": {
@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bootstrap-vue/bootstrap-vue/issues"
+    "url": "https://github.com/Ugzuzg/bootstrap-vue/issues"
   },
   "devDependencies": {
     "babel-core": "latest",
