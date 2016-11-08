@@ -1,5 +1,5 @@
 <template>
-  <div role="tabpanel" class="tab-pane" :class="{active: active, disabled: disabled, fade: fade, in: animate}">
+  <div role="tabpanel" class="tab-pane" :class="{active: activeValue, disabled: disabled, fade: fade, in: animate}">
     <slot></slot>
   </div>
 </template>
@@ -11,6 +11,7 @@ export default {
       return {
         fade: this.$parent.fade,
         animate: false,
+        activeValue: false,
       }
     },
     props: {
@@ -32,8 +33,9 @@ export default {
       }
     },
     mounted() {
-      const items = this.$parent.$get('items');
-      items.push({id: this.id, title: this.title, active: this.active, disabled: this.disabled})
+      this.activeValue = this.active;
+      const items = this.$parent.items;
+      items.push({id: this.id, title: this.title, active: this.activeValue, disabled: this.disabled})
     },
 }
 

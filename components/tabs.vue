@@ -29,10 +29,24 @@
       }
     },
     computed: {
+      /**
+       * get an index of an active tab
+       * @return {Number}
+       */
+      active() {
+        let active = -1;
+        this.items.forEach((item, index) => {
+          if (item.active) {
+            active = index
+          }
+        });
+        return active
+      },
       btnSize() {
         return !this.size || this.size === 'default' ? '' : `btn-${this.size}`
       },
     },
+
     props: {
       fade: {
         type: Boolean,
@@ -46,20 +60,6 @@
     methods: {
 
       /**
-       * get an index of an active tab
-       * @return {Number}
-       */
-      getActive() {
-        let active = -1;
-        this.items.forEach((item, index) => {
-          if (item.active) {
-            active = index
-          }
-        });
-        return active
-      },
-
-      /**
        * set active tab on the items collection and the child 'tab' component
        */
       setActive(index) {
@@ -67,27 +67,27 @@
         if (this.items[index].disabled) return;
 
         // deactivate previous active tab
-        const activeTab = this.getActive();
+        const activeTab = this.active;
         if (activeTab !== -1) {
           // setting animate to false will trigger fade out effect
           this.items[activeTab].active = false;
-          this.$children[activeTab].$set('animate', false);
-          this.$children[activeTab].$set('active', false)
+          this.$children[activeTab].$set(this.$children[activeTab], 'animate', false);
+          this.$children[activeTab].$set(this.$children[activeTab], 'activeValue', false)
         }
 
         // set new active tab and animate (if fade flag is set to true)
-        this.$children[index].$set('active', true);
+        this.$children[index].$set(this.$children[index], 'activeValue', true);
         this._tabAnimation = setTimeout(() => {
           // setting animate to true will trigger fade in effect
           this.items[index].active = true;
-          this.$children[index].$set('animate', true);
-          this.$root.$emit('changed::tab', this.items[index].id)
+          this.$children[index].$set(this.$children[index], 'animate', true);
+          //this.$root.$emit('changed::tab', this.items[index].id)
         }, this.fade ? TRANSITION_DURATION : 0)
       },
     },
     mounted() {
       // if no active tab, set the first one by default
-      if (this.getActive() === -1) {
+      if (this.active === -1) {
         this.setActive(0)
       }
     },
