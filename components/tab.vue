@@ -1,5 +1,5 @@
 <template>
-  <div role="tabpanel" class="tab-pane" :class="{active: activeValue, disabled: disabled, fade: fade, in: animate}">
+  <div role="tabpanel" class="tab-pane" :class="{active: activeValue, disabled: disabled, fade: fade, in: animate}" v-if="hiddenRender || activeValue">
     <slot></slot>
   </div>
 </template>
@@ -30,6 +30,10 @@ export default {
       disabled: {
         type: Boolean,
         default: false
+      },
+      hiddenRender: {
+        type: Boolean,
+        default: true
       }
     },
     mounted() {
